@@ -4,7 +4,16 @@ const button = document.getElementById('button');
 // Promp to select media stream, pass to video element, then play
 async function selectMediaStream() {
     try {
-        const mediaStream = await navigator.mediaDevices.getDisplayMedia();
+        // Create a new CaptureController instance
+        const controller = new CaptureController();
+
+        const mediaStream = await navigator.mediaDevices.getDisplayMedia({ controller });
+        
+        // Avoid changing focus to selected stream (remain on application)
+        //const [track] = mediaStream.getVideoTracks();
+        //const displaySurface = track.getSettings().displaySurface;
+        controller.setFocusBehavior("no-focus-change");
+
         videoElement.srcObject = mediaStream;
         videoElement.onloadedmetadata = () => {
             videoElement.play();
